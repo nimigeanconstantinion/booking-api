@@ -1,18 +1,15 @@
 package com.example.book_management.controller;
 
-import com.example.book_management.initslot.utils.CompareDate;
 import com.example.book_management.model.Programare;
 import com.example.book_management.repository.BookRepository;
+import com.example.book_management.tools.CompareDate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,6 +39,7 @@ public class BookController {
         CompareDate comparare=new CompareDate();
         //&&
         //                java.sql.Timestamp.valueOf(a.getData1())==java.sql.Timestamp.valueOf(day)
+        //comparare.compare(a.getData1(),day)==0
         return this.bookrepo.findAll().stream().filter(a->a.getSection().equals(sectiune)&&comparare.compare(a.getData1(),day)==0).collect(Collectors.toList());
     }
 
@@ -92,6 +90,7 @@ public class BookController {
     public void updateSlot(@RequestBody Programare newP,@PathVariable Long id) throws Exception{
         this.bookrepo.findById(id).map(p->{
             p.setClient(newP.getClient());
+            p.setObs(newP.getObs());
             return this.bookrepo.save(p);
         }).orElseThrow(()->new Exception("Eroare de update"));
     }
